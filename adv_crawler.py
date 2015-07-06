@@ -1,5 +1,6 @@
 import csv
 import re
+import urllib2
 from bs4 import BeautifulSoup
 import time
 import twill
@@ -30,17 +31,19 @@ class Crowler(object):
     def to_craw(self):
         adverts = self.__find_adverts()
         
-        while adverts and PAGE_NUMBER < 2:
+        while adverts and self.paginator <= 1:
             try:
                 advert_anchors = self.__find_links(adverts)
                 
                 self.results.extend(self.__collect_detail(advert_anchors))
-            except:
+            except (urllib2.URLError, urllib2.HTTPError):
+                print 'bbb'
                 adverts = False
             else:   
                 self.paginator += 1
                 adverts = self.__find_adverts()
         
+        print 'aa'
         self.__save_data()
 
     def __find_adverts(self):
@@ -66,7 +69,7 @@ class Crowler(object):
             link = HOST_BLANK.format(anchor.get('href'))
 
             result.append(self.__parse_detail(link))
-            time.sleep(10)
+            #time.sleep(10)
         
         return result
 
@@ -82,7 +85,7 @@ class Crowler(object):
         result['city'] = self.__get_city(soap).encode('utf-8') 
         # result['email'] = self.__get_email(soap).encode('utf-8')
         
-        print result.encode('utf-8')
+        print result
 
         return result
 
