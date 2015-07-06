@@ -4,7 +4,7 @@ import urllib2
 import mechanize
 from bs4 import BeautifulSoup
 import time
-import twill
+from twill import get_browser
 import twill.commands as tw
 
 STANDART_PAGE = 'https://www.erstenachhilfe.de/nachhilfelehrer?page={}'
@@ -20,7 +20,7 @@ class Crowler(object):
         self.browser = self.__create_session()
 
     def __create_session(self):
-        browser = twill.get_browser()
+        browser = get_browser()
         browser.go('http://www.erstenachhilfe.de/user?destination=node%2F767')
         tw.fv('2', 'edit-name', LOGIN)
         tw.fv('2', 'edit-pass', PASSWORD)
