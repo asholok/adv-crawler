@@ -1,6 +1,7 @@
 import csv
 import re
 import urllib2
+import mechanize
 from bs4 import BeautifulSoup
 import time
 import twill
@@ -31,12 +32,12 @@ class Crowler(object):
     def to_craw(self):
         adverts = self.__find_adverts()
         
-        while adverts and self.paginator < 2:
+        while adverts:
             try:
                 advert_anchors = self.__find_links(adverts)
                 
                 self.results.extend(self.__collect_detail(advert_anchors))
-            except (urllib2.URLError, urllib2.HTTPError):
+            except (mechanize._mechanize.BrowserStateError):
                 adverts = False
             else:   
                 self.paginator += 1
@@ -143,6 +144,6 @@ class Crowler(object):
 
 
 
-a = Crowler()
+# a = Crowler()
 
-a.to_craw()
+# a.to_craw()
