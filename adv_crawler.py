@@ -144,6 +144,6 @@ class Crowler(object):
 
 
 
-# a = Crowler()
+a = Crowler()
 
-# a.to_craw()
+a.to_craw()
