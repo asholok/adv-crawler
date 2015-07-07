@@ -38,6 +38,8 @@ class Crowler(object):
                 
                 self.results.extend(self.__collect_detail(advert_anchors))
             except (mechanize._mechanize.BrowserStateError):
+                pass
+            except AttributeError:
                 adverts = False
             else:   
                 self.paginator += 1
