@@ -16,8 +16,8 @@ HOST_BLANK = 'https://www.erstenachhilfe.de{}'
 class Crowler(object):
     def __init__(self):
         self.paginator = PAGE_NUMBER
-        self.results = []
         self.browser = self.__create_session()
+        self.first_time = True
 
     def __create_session(self):
         browser = get_browser()
@@ -36,7 +36,7 @@ class Crowler(object):
             try:
                 advert_anchors = self.__find_links(adverts)
                 
-                self.results.extend(self.__collect_detail(advert_anchors))
+                self.__collect_detail(advert_anchors)
             except (mechanize._mechanize.BrowserStateError):
                 pass
             except AttributeError:
@@ -71,8 +71,8 @@ class Crowler(object):
 
             result.append(self.__parse_detail(link))
             time.sleep(5)
-        
-        return result
+        self.__save_data(result)
+
 
     def __parse_detail(self, detail_link):
         result = {}
@@ -135,13 +135,15 @@ class Crowler(object):
 
         return 'N/A'
 
-    def __save_data(self):
-        with open('adverts.csv', 'wb') as f:
+    def __save_data(self, data):
+        with open('adverts.csv', 'a+') as f:
             fieldnames = ['link', 'name', 'zip_code', 'subjects', 'city', 'phone', 'url_picture']
             writer = csv.DictWriter(f, fieldnames=fieldnames)
 
-            writer.writeheader()
-            for row in self.results:
+            if self.first_time:
+                writer.writeheader()
+                self.first_time = False
+            for row in data:
                 writer.writerow(row)
 
 
